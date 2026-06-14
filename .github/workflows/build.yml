@@ -1,0 +1,23 @@
+name: Build APK
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip openjdk-17-jdk
+          pip install buildozer cython
+      - name: Build APK
+        run: |
+          buildozer init
+          buildozer android debug
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: gym-game-apk
+          path: bin/*.apk
